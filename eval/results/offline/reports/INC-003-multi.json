@@ -1,0 +1,202 @@
+{
+ "incident_id": "INC-003",
+ "system": "multi-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "payment-gateway-ext",
+  "cause_type": "dependency_outage",
+  "confidence": 0.64
+ },
+ "summary": "Most likely root cause: dependency outage in payment-gateway-ext (confidence 64%). dependency outage in payment-gateway-ext: own metrics anomalous: latency_p99_ms x18.03, error_rate_pct x153.16; named in 31 error/warn logs of ['payment-service']; deepest implicated node in the dependency chain; log keywords indicate dependency_outage",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "dependency outage in payment-gateway-ext: own metrics anomalous: latency_p99_ms x18.03, error_rate_pct x153.16; named in 31 error/warn logs of ['payment-service']; deepest implicated node in the dependency chain; log keywords indicate dependency_outage",
+   "suspect_service": "payment-gateway-ext",
+   "cause_type": "dependency_outage",
+   "confidence": 0.64,
+   "supporting": [
+    {
+     "id": "E07",
+     "kind": "fact",
+     "claim": "payment-gateway-ext latency_p99_ms moved from baseline 304.86 to 5496.81 (x18.03), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-gateway-ext-latency_p99_ms"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E08",
+     "kind": "fact",
+     "claim": "payment-gateway-ext error_rate_pct moved from baseline 0.2 to 30.89 (x153.16), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-gateway-ext-error_rate_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+     "refs": [
+      "L-0218"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+     "refs": [
+      "L-0217"
+     ],
+     "agent": "observability",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "dependency outage in payment-service: own metrics anomalous: latency_p99_ms x25.49, error_rate_pct x72.79; 31 own error logs; downstream services also implicated: ['payment-gateway-ext'] (may be a victim); log keywords indicate dependency_outage",
+   "suspect_service": "payment-service",
+   "cause_type": "dependency_outage",
+   "confidence": 0.34,
+   "supporting": [
+    {
+     "id": "E05",
+     "kind": "fact",
+     "claim": "payment-service latency_p99_ms moved from baseline 176.29 to 4493.12 (x25.49), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-service-latency_p99_ms"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E06",
+     "kind": "fact",
+     "claim": "payment-service error_rate_pct moved from baseline 0.4 to 28.93 (x72.79), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-service-error_rate_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+     "refs": [
+      "L-0218"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+     "refs": [
+      "L-0217"
+     ],
+     "agent": "observability",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+  "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+  "payment-service latency_p99_ms moved from baseline 176.29 to 4493.12 (x25.49), first anomalous at 2026-03-05T18:55:00Z",
+  "payment-service error_rate_pct moved from baseline 0.4 to 28.93 (x72.79), first anomalous at 2026-03-05T18:55:00Z",
+  "payment-gateway-ext latency_p99_ms moved from baseline 304.86 to 5496.81 (x18.03), first anomalous at 2026-03-05T18:55:00Z",
+  "payment-gateway-ext error_rate_pct moved from baseline 0.2 to 30.89 (x153.16), first anomalous at 2026-03-05T18:55:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Fail over / degrade gracefully away from payment-gateway-ext",
+   "rationale": "the dependency is failing; reduce customer impact",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Add circuit breaker, tighter timeouts and a secondary provider for payment-gateway-ext",
+   "rationale": "contain future dependency outages",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "critic accepted in round 0",
+  "critiques": [
+   {
+    "round": 0,
+    "verdict": "accept",
+    "issues": []
+   }
+  ],
+  "tasks": [
+   {
+    "id": "OBS-1",
+    "agent": "observability",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "DEP-2",
+    "agent": "dependency",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "REA-3",
+    "agent": "reasoning",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable)"
+   },
+   {
+    "id": "CRI-4",
+    "agent": "critic",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); rule-based critique only"
+   },
+   {
+    "id": "REP-5",
+    "agent": "reporting",
+    "status": "recovered",
+    "round": 0,
+    "note": "template report"
+   }
+  ],
+  "tool_calls": 18,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 4,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.68,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

@@ -1,0 +1,104 @@
+{
+ "incident_id": "INC-006",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "auth-service",
+  "cause_type": "certificate_expiry",
+  "confidence": 0.54
+ },
+ "summary": "Most likely root cause: certificate expiry in auth-service (confidence 54%). certificate_expiry in auth-service: own metrics anomalous: request_rate_rps x0.05; deepest implicated node in the dependency chain; log keywords indicate certificate_expiry",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "certificate_expiry in auth-service: own metrics anomalous: request_rate_rps x0.05; deepest implicated node in the dependency chain; log keywords indicate certificate_expiry",
+   "suspect_service": "auth-service",
+   "cause_type": "certificate_expiry",
+   "confidence": 0.54,
+   "supporting": [
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "auth-service request_rate_rps moved from baseline 216.47 to 10.89 (x0.05), first anomalous at 2026-03-14T00:00:00Z",
+     "refs": [
+      "M-auth-service-request_rate_rps"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "certificate_expiry in api-gateway: named in 12 error/warn logs of ['auth-service']; downstream services also implicated: ['auth-service'] (may be a victim); log keywords indicate certificate_expiry",
+   "suspect_service": "api-gateway",
+   "cause_type": "certificate_expiry",
+   "confidence": 0.29,
+   "supporting": [
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "auth-service logged 12x WARN 'inbound TLS handshake failure from api-gateway' between 2026-03-14T00:03:03Z and 2026-03-14T00:58:47Z",
+     "refs": [
+      "L-0241"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "auth-service logged 12x WARN 'inbound TLS handshake failure from api-gateway' between 2026-03-14T00:03:03Z and 2026-03-14T00:58:47Z",
+  "auth-service request_rate_rps moved from baseline 216.47 to 10.89 (x0.05), first anomalous at 2026-03-14T00:00:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Rotate the expired certificate on auth-service",
+   "rationale": "TLS handshakes are failing on expiry",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Automate certificate renewal and alert 30 days before expiry",
+   "rationale": "prevent recurrence",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 7,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 1,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

@@ -1,0 +1,104 @@
+{
+ "incident_id": "INC-002",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "frontend",
+  "cause_type": "unknown",
+  "confidence": 0.58
+ },
+ "summary": "Most likely root cause: unknown in frontend (confidence 58%). unknown in frontend: own metrics anomalous: error_rate_pct x15.04; 15 own error logs; deepest implicated node in the dependency chain",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "unknown in frontend: own metrics anomalous: error_rate_pct x15.04; 15 own error logs; deepest implicated node in the dependency chain",
+   "suspect_service": "frontend",
+   "cause_type": "unknown",
+   "confidence": 0.58,
+   "supporting": [
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "frontend error_rate_pct moved from baseline 0.4 to 6.01 (x15.04), first anomalous at 2026-03-03T09:50:00Z",
+     "refs": [
+      "M-frontend-error_rate_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "frontend logged 15x ERROR 'POST /api/orders failed: 504 Gateway Timeout' between 2026-03-03T09:58:11Z and 2026-03-03T10:53:22Z",
+     "refs": [
+      "L-0319"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "deployment D-001: frontend v9.8.0 at 2026-03-03T09:56:00Z (New promo banner component)",
+     "refs": [
+      "D-001"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "assumptions": [
+    "no signal pins down the failure mechanism"
+   ]
+  }
+ ],
+ "facts": [
+  "frontend logged 15x ERROR 'POST /api/orders failed: 504 Gateway Timeout' between 2026-03-03T09:58:11Z and 2026-03-03T10:53:22Z",
+  "frontend error_rate_pct moved from baseline 0.4 to 6.01 (x15.04), first anomalous at 2026-03-03T09:50:00Z",
+  "deployment D-001: frontend v9.8.0 at 2026-03-03T09:56:00Z (New promo banner component)"
+ ],
+ "inferences": [],
+ "assumptions": [
+  "no signal pins down the failure mechanism"
+ ],
+ "actions": [
+  {
+   "priority": "P1",
+   "action": "Keep incident open; add tracing/profiling around frontend and collect complete metrics",
+   "rationale": "evidence is insufficient for a root cause",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [
+  "no signal pins down the failure mechanism"
+ ],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 7,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 1,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

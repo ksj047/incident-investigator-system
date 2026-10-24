@@ -1,0 +1,14 @@
+{
+  "incident_id": "INC-011",
+  "root_cause_service": "notification-service",
+  "cause_type": "config_change",
+  "accepted_cause_types": [
+    "config_change"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "C-001",
+    "L-0233"
+  ],
+  "traps": "historical incident H-003 blames redis; redis evictions really are elevated (but started 35m earlier and unrelated)"
+}

@@ -1,0 +1,16 @@
+{
+  "incident_id": "INC-005",
+  "root_cause_service": "api-gateway",
+  "cause_type": "traffic_spike",
+  "accepted_cause_types": [
+    "traffic_spike"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "L-0229",
+    "L-0230",
+    "L-0258",
+    "M-api-gateway-request_rate_rps"
+  ],
+  "traps": "auth-service deploy 40m before is harmless"
+}

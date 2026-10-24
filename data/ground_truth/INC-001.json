@@ -1,0 +1,15 @@
+{
+  "incident_id": "INC-001",
+  "root_cause_service": "payment-service",
+  "cause_type": "deployment_bug",
+  "accepted_cause_types": [
+    "deployment_bug"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "D-001",
+    "L-0201",
+    "M-payment-service-error_rate_pct"
+  ],
+  "traps": "none - baseline sanity case"
+}

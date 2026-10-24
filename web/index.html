@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident Investigator</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo"></span>Incident Investigator<span class="sub">multi-agent root-cause analysis</span></div>
+  <nav class="tabs" id="tabs">
+    <button data-view="investigate" class="active">Investigate</button>
+    <button data-view="evaluation">Evaluation</button>
+    <button data-view="api">Backend API</button>
+  </nav>
+  <div class="api-status" id="apiStatus"><span class="dot"></span><span>connecting…</span></div>
+</header>
+
+<main>
+  <!-- ======================= INVESTIGATE ======================= -->
+  <section class="view active" id="view-investigate">
+    <aside class="incidents">
+      <div class="aside-head">Incidents <span id="incCount" class="muted"></span></div>
+      <div id="incidentList" class="inc-list"></div>
+    </aside>
+
+    <div class="workspace">
+      <div class="card incident-bar">
+        <div class="inc-head">
+          <div class="inc-title-row">
+            <span id="incId" class="inc-id">—</span>
+            <span id="incSev" class="sev"></span>
+            <h1 id="incTitle">Select an incident</h1>
+          </div>
+          <div id="incMeta" class="inc-meta"></div>
+          <p id="incDesc" class="inc-desc"></p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Investigator</label>
+            <div class="seg" id="modeSeg">
+              <button data-mode="multi" class="active">Multi-agent</button>
+              <button data-mode="single">Single-agent</button>
+            </div>
+          </div>
+          <div class="control">
+            <label for="backendSel">LLM backend</label>
+            <select id="backendSel">
+              <option value="offline">Offline (deterministic agents)</option>
+              <option value="openrouter">OpenRouter LLM</option>
+            </select>
+          </div>
+          <div class="control">
+            <label for="paceSel">Playback</label>
+            <select id="paceSel">
+              <option value="0">Real time</option>
+              <option value="60">Fast replay</option>
+              <option value="140" selected>Demo speed</option>
+              <option value="300">Slow</option>
+            </select>
+          </div>
+          <div class="control buttons">
+            <button id="runBtn" class="primary" disabled>Run investigation</button>
+            <button id="reportBtn" class="ghost" disabled>View report</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="grid">
+        <div class="card" id="pipelineCard">
+          <div class="card-head"><h2>Agents</h2><span class="hint" id="roundHint">idle</span></div>
+          <div id="pipeline" class="pipeline"></div>
+        </div>
+        <div class="card" id="graphCard">
+          <div class="card-head"><h2>Service dependency graph</h2>
+            <div class="legend">
+              <span><i class="lg queried"></i>examined</span><span><i class="lg anomalous"></i>anomaly / errors</span>
+              <span><i class="lg changed"></i>changed</span><span><i class="lg failed"></i>tool failure</span><span><i class="lg suspect"></i>top suspect</span>
+            </div>
+          </div>
+          <svg id="graph" class="graph" viewBox="0 0 760 300" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="card" id="feedCard">
+          <div class="card-head"><h2>Live activity</h2><span class="hint" id="feedCount"></span></div>
+          <div id="feed" class="feed"></div>
+        </div>
+        <div class="card" id="criticCard">
+          <div class="card-head"><h2>Critic</h2><span class="hint">challenges the leading hypothesis</span></div>
+          <div id="critic" class="critic"><div class="empty">The critic reviews each round's hypotheses.</div></div>
+        </div>
+        <div class="card" id="hypCard">
+          <div class="card-head"><h2>Competing hypotheses</h2><span class="hint" id="hypHint"></span></div>
+          <div id="hyps" class="hyps"><div class="empty">Hypotheses appear once evidence is gathered.</div></div>
+        </div>
+        <div class="card" id="evidenceCard">
+          <div class="card-head"><h2>Evidence board</h2><span class="hint" id="evCount"></span></div>
+          <div id="evidence" class="evidence"><div class="empty">Shared blackboard: every finding with its record ids.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= EVALUATION ======================= -->
+  <section class="view" id="view-evaluation">
+    <div class="eval-wrap">
+      <div class="eval-head">
+        <div>
+          <h1>Multi-agent vs single-agent</h1>
+          <p class="muted">Same tools, same budgets, same report schema · 12 synthetic incidents with misleading evidence, conflicting observations and tool failures</p>
+        </div>
+        <div class="control"><label for="evalSel">Result set</label><select id="evalSel"></select></div>
+      </div>
+      <div id="evalCards" class="eval-cards"></div>
+      <div class="eval-grid">
+        <div class="card"><div class="card-head"><h2>Quality metrics</h2></div><svg id="evalChart" viewBox="0 0 760 330"></svg></div>
+        <div class="card"><div class="card-head"><h2>Cost per investigation</h2></div><div id="evalCost" class="cost"></div></div>
+      </div>
+      <div class="card"><div class="card-head"><h2>Per incident</h2></div><div id="evalTable"></div></div>
+    </div>
+  </section>
+
+  <!-- ======================= API ======================= -->
+  <section class="view" id="view-api">
+    <div class="api-wrap">
+      <div class="api-list card">
+        <div class="card-head"><h2>Backend endpoints</h2><span class="hint">python3 -m server.app</span></div>
+        <div id="endpoints"></div>
+      </div>
+      <div class="card api-out">
+        <div class="card-head"><h2 id="apiOutTitle">Response</h2><span class="hint" id="apiOutMeta"></span></div>
+        <pre id="apiOut" class="json">Click an endpoint to call the backend.</pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- backend console dock (visible on every view) -->
+<div class="dock" id="dock">
+  <div class="dock-head">
+    <span class="dot live"></span><b>Backend console</b><span class="muted">live server log · GET /api/logs (SSE)</span>
+    <button id="dockToggle" class="ghost small">hide</button>
+  </div>
+  <div id="console" class="console"></div>
+</div>
+
+<!-- report drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head"><h2 id="drawerTitle">Investigation report</h2><button id="drawerClose" class="ghost small">close</button></div>
+  <div id="report" class="report"></div>
+</aside>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "incident_id": "INC-003",
+  "root_cause_service": "payment-gateway-ext",
+  "cause_type": "dependency_outage",
+  "accepted_cause_types": [
+    "dependency_outage"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "L-0217",
+    "M-payment-gateway-ext-error_rate_pct",
+    "H-003"
+  ],
+  "traps": "unrelated notification config change; first metrics call for payment-service times out"
+}

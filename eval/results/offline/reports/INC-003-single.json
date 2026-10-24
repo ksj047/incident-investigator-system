@@ -1,0 +1,146 @@
+{
+ "incident_id": "INC-003",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "payment-service",
+  "cause_type": "dependency_outage",
+  "confidence": 0.55
+ },
+ "summary": "Most likely root cause: dependency outage in payment-service (confidence 55%). dependency_outage in payment-service: own metrics anomalous: latency_p99_ms x25.49, error_rate_pct x72.79; 31 own error logs; deepest implicated node in the dependency chain",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "dependency_outage in payment-service: own metrics anomalous: latency_p99_ms x25.49, error_rate_pct x72.79; 31 own error logs; deepest implicated node in the dependency chain",
+   "suspect_service": "payment-service",
+   "cause_type": "dependency_outage",
+   "confidence": 0.55,
+   "supporting": [
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "payment-service latency_p99_ms moved from baseline 176.29 to 4493.12 (x25.49), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-service-latency_p99_ms"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "payment-service error_rate_pct moved from baseline 0.4 to 28.93 (x72.79), first anomalous at 2026-03-05T18:55:00Z",
+     "refs": [
+      "M-payment-service-error_rate_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+     "refs": [
+      "L-0218"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+     "refs": [
+      "L-0217"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "dependency_outage in payment-gateway-ext: named in 31 error/warn logs of ['payment-service']; deepest implicated node in the dependency chain; log keywords indicate dependency_outage",
+   "suspect_service": "payment-gateway-ext",
+   "cause_type": "dependency_outage",
+   "confidence": 0.46,
+   "supporting": [
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+     "refs": [
+      "L-0218"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+     "refs": [
+      "L-0217"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "payment-service logged 16x ERROR 'payment-gateway-ext returned 503 Service Unavailable' between 2026-03-05T18:58:11Z and 2026-03-05T19:55:16Z",
+  "payment-service logged 15x ERROR 'upstream timeout calling payment-gateway-ext after 5000ms' between 2026-03-05T18:55:21Z and 2026-03-05T19:51:34Z",
+  "payment-service latency_p99_ms moved from baseline 176.29 to 4493.12 (x25.49), first anomalous at 2026-03-05T18:55:00Z",
+  "payment-service error_rate_pct moved from baseline 0.4 to 28.93 (x72.79), first anomalous at 2026-03-05T18:55:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Fail over / degrade gracefully away from payment-service",
+   "rationale": "the dependency is failing; reduce customer impact",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Add circuit breaker, tighter timeouts and a secondary provider for payment-service",
+   "rationale": "contain future dependency outages",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 8,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 2,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.33,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

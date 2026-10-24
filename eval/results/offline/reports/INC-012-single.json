@@ -1,0 +1,103 @@
+{
+ "incident_id": "INC-012",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "frontend",
+  "cause_type": "unknown",
+  "confidence": 0.58
+ },
+ "summary": "Most likely root cause: unknown in frontend (confidence 58%). unknown in frontend: own metrics anomalous: error_rate_pct x49.9; 56 own error logs; deepest implicated node in the dependency chain",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "unknown in frontend: own metrics anomalous: error_rate_pct x49.9; 56 own error logs; deepest implicated node in the dependency chain",
+   "suspect_service": "frontend",
+   "cause_type": "unknown",
+   "confidence": 0.58,
+   "supporting": [
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "frontend error_rate_pct moved from baseline 0.4 to 20.13 (x49.9), first anomalous at 2026-03-29T07:00:00Z",
+     "refs": [
+      "M-frontend-error_rate_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "frontend logged 30x ERROR 'GET /api/account/orders failed: 500' between 2026-03-29T07:00:24Z and 2026-03-29T07:54:21Z (INCOMPLETE data)",
+     "refs": [
+      "L-0298"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "frontend logged 26x ERROR 'POST /api/orders failed: 500' between 2026-03-29T07:02:05Z and 2026-03-29T07:55:18Z (INCOMPLETE data)",
+     "refs": [
+      "L-0300"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "no signal pins down the failure mechanism"
+   ]
+  }
+ ],
+ "facts": [
+  "frontend logged 30x ERROR 'GET /api/account/orders failed: 500' between 2026-03-29T07:00:24Z and 2026-03-29T07:54:21Z (INCOMPLETE data)",
+  "frontend logged 26x ERROR 'POST /api/orders failed: 500' between 2026-03-29T07:02:05Z and 2026-03-29T07:55:18Z (INCOMPLETE data)",
+  "frontend error_rate_pct moved from baseline 0.4 to 20.13 (x49.9), first anomalous at 2026-03-29T07:00:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [
+  "no signal pins down the failure mechanism"
+ ],
+ "actions": [
+  {
+   "priority": "P1",
+   "action": "Keep incident open; add tracing/profiling around frontend and collect complete metrics",
+   "rationale": "evidence is insufficient for a root cause",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [
+  "no signal pins down the failure mechanism"
+ ],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 7,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 1,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

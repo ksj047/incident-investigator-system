@@ -1,0 +1,46 @@
+{
+ "incident_id": "INC-009",
+ "system": "single-agent",
+ "outcome": "inconclusive",
+ "root_cause": null,
+ "summary": "Investigation inconclusive: the available evidence does not support any root cause with sufficient confidence. Leading lead: none.",
+ "hypotheses": [],
+ "facts": [],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P1",
+   "action": "Keep incident open; add tracing/profiling around user-service and collect complete metrics",
+   "rationale": "evidence is insufficient for a root cause",
+   "hypothesis": null
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 6,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 0,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.01,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

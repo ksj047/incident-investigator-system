@@ -1,0 +1,15 @@
+{
+  "incident_id": "INC-007",
+  "root_cause_service": "redis-cache",
+  "cause_type": "config_change",
+  "accepted_cause_types": [
+    "config_change"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "C-001",
+    "M-redis-cache-hit_rate_pct",
+    "M-product-db-cpu_pct"
+  ],
+  "traps": "log queries for the key services always time out; must reason from metrics + config history"
+}

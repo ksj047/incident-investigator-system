@@ -1,0 +1,14 @@
+{
+  "incident_id": "INC-010",
+  "root_cause_service": "api-gateway",
+  "cause_type": "config_change",
+  "accepted_cause_types": [
+    "config_change"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "C-001",
+    "M-user-service-request_rate_rps"
+  ],
+  "traps": "user-service is the victim; its own deploy is 3h old; gateway inbound traffic is flat (retry storm amplification)"
+}

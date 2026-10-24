@@ -1,0 +1,16 @@
+{
+  "incident_id": "INC-004",
+  "root_cause_service": "recommendation-service",
+  "cause_type": "resource_exhaustion",
+  "accepted_cause_types": [
+    "resource_exhaustion",
+    "deployment_bug"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "L-0214",
+    "M-recommendation-service-memory_pct",
+    "D-001"
+  ],
+  "traps": "recent search-service deploy D-002 is a red herring; the real change is 5h old (slow leak)"
+}

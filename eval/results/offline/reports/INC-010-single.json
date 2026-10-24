@@ -1,0 +1,171 @@
+{
+ "incident_id": "INC-010",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "api-gateway",
+  "cause_type": "config_change",
+  "confidence": 0.61
+ },
+ "summary": "Most likely root cause: config change in api-gateway (confidence 61%). config_change in api-gateway: config_change C-001 at 2026-03-25T11:48:00Z precedes related anomaly by 2 min; change explicitly targets an affected service",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "config_change in api-gateway: config_change C-001 at 2026-03-25T11:48:00Z precedes related anomaly by 2 min; change explicitly targets an affected service",
+   "suspect_service": "api-gateway",
+   "cause_type": "config_change",
+   "confidence": 0.61,
+   "supporting": [
+    {
+     "id": "E08",
+     "kind": "fact",
+     "claim": "config change C-001: api-gateway retry_policy.user-service {attempts: 1} -> {attempts: 5, backoff: none} at 2026-03-25T11:48:00Z by platform-team",
+     "refs": [
+      "C-001"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "traffic_spike in user-service: own metrics anomalous: latency_p99_ms x11.84, error_rate_pct x35.1, cpu_pct x2.79, request_rate_rps x4.85; 22 own error logs; deepest implicated node in the dependency chain",
+   "suspect_service": "user-service",
+   "cause_type": "traffic_spike",
+   "confidence": 0.2,
+   "supporting": [
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "user-service latency_p99_ms moved from baseline 180.45 to 2136.71 (x11.84), first anomalous at 2026-03-25T11:50:00Z",
+     "refs": [
+      "M-user-service-latency_p99_ms"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "user-service error_rate_pct moved from baseline 0.4 to 13.98 (x35.1), first anomalous at 2026-03-25T11:50:00Z",
+     "refs": [
+      "M-user-service-error_rate_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E05",
+     "kind": "fact",
+     "claim": "user-service cpu_pct moved from baseline 35.1 to 98.09 (x2.79), first anomalous at 2026-03-25T11:50:00Z",
+     "refs": [
+      "M-user-service-cpu_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E06",
+     "kind": "fact",
+     "claim": "user-service request_rate_rps moved from baseline 218.71 to 1059.87 (x4.85), first anomalous at 2026-03-25T11:50:00Z",
+     "refs": [
+      "M-user-service-request_rate_rps"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "user-service logged 15x ERROR 'thread pool saturated (200/200)' between 2026-03-25T11:54:52Z and 2026-03-25T12:53:04Z",
+     "refs": [
+      "L-0252"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "user-service logged 7x ERROR 'request queue full, rejecting request' between 2026-03-25T11:52:08Z and 2026-03-25T12:50:12Z",
+     "refs": [
+      "L-0251"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [
+    {
+     "id": "E07",
+     "kind": "fact",
+     "claim": "deployment D-001: user-service v2.9.4 at 2026-03-25T08:50:00Z (Add avatar URL to profile response)",
+     "refs": [
+      "D-001"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "user-service logged 15x ERROR 'thread pool saturated (200/200)' between 2026-03-25T11:54:52Z and 2026-03-25T12:53:04Z",
+  "user-service logged 7x ERROR 'request queue full, rejecting request' between 2026-03-25T11:52:08Z and 2026-03-25T12:50:12Z",
+  "user-service latency_p99_ms moved from baseline 180.45 to 2136.71 (x11.84), first anomalous at 2026-03-25T11:50:00Z",
+  "user-service error_rate_pct moved from baseline 0.4 to 13.98 (x35.1), first anomalous at 2026-03-25T11:50:00Z",
+  "user-service cpu_pct moved from baseline 35.1 to 98.09 (x2.79), first anomalous at 2026-03-25T11:50:00Z",
+  "user-service request_rate_rps moved from baseline 218.71 to 1059.87 (x4.85), first anomalous at 2026-03-25T11:50:00Z",
+  "deployment D-001: user-service v2.9.4 at 2026-03-25T08:50:00Z (Add avatar URL to profile response)",
+  "config change C-001: api-gateway retry_policy.user-service {attempts: 1} -> {attempts: 5, backoff: none} at 2026-03-25T11:48:00Z by platform-team"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Revert the configuration change on api-gateway",
+   "rationale": "the change immediately preceded the first anomaly",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Route config/flag changes for api-gateway through staged rollout with automatic rollback",
+   "rationale": "config changes need the same safety as code",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 7,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 1,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

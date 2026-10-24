@@ -1,0 +1,146 @@
+{
+ "incident_id": "INC-009",
+ "system": "multi-agent",
+ "outcome": "inconclusive",
+ "root_cause": null,
+ "summary": "Investigation inconclusive: the available evidence does not support any root cause with sufficient confidence. Leading lead: No candidate root cause stands out: no change events precede the symptoms and no metric anomaly or error cluster implicates a component..",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "No candidate root cause stands out: no change events precede the symptoms and no metric anomaly or error cluster implicates a component.",
+   "suspect_service": null,
+   "cause_type": "unknown",
+   "confidence": 0.1,
+   "supporting": [
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "user-service logged 8x WARN 'slow request detected (>1s) GET /profile' between 2026-03-23T14:33:43Z and 2026-03-23T15:54:59Z",
+     "refs": [
+      "L-0234"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "user-service latency_p99_ms: recent datapoints missing (INCOMPLETE data)",
+     "refs": [
+      "M-user-service-latency_p99_ms"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "user-service error_rate_pct: recent datapoints missing (INCOMPLETE data)",
+     "refs": [
+      "M-user-service-error_rate_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "user-service cpu_pct: recent datapoints missing (INCOMPLETE data)",
+     "refs": [
+      "M-user-service-cpu_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "symptom may be client-side, intermittent, or outside the observed data"
+   ]
+  }
+ ],
+ "facts": [
+  "user-service logged 8x WARN 'slow request detected (>1s) GET /profile' between 2026-03-23T14:33:43Z and 2026-03-23T15:54:59Z",
+  "user-service latency_p99_ms: recent datapoints missing (INCOMPLETE data)",
+  "user-service error_rate_pct: recent datapoints missing (INCOMPLETE data)",
+  "user-service cpu_pct: recent datapoints missing (INCOMPLETE data)"
+ ],
+ "inferences": [],
+ "assumptions": [
+  "symptom may be client-side, intermittent, or outside the observed data"
+ ],
+ "actions": [
+  {
+   "priority": "P1",
+   "action": "Keep incident open; add tracing/profiling around user-service and collect complete metrics",
+   "rationale": "evidence is insufficient for a root cause",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [
+  "symptom may be client-side, intermittent, or outside the observed data"
+ ],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "critic judged evidence insufficient in round 0",
+  "critiques": [
+   {
+    "round": 0,
+    "verdict": "inconclusive",
+    "issues": [
+     "H1 names no failure mechanism"
+    ]
+   }
+  ],
+  "tasks": [
+   {
+    "id": "OBS-1",
+    "agent": "observability",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "DEP-2",
+    "agent": "dependency",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "REA-3",
+    "agent": "reasoning",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable)"
+   },
+   {
+    "id": "CRI-4",
+    "agent": "critic",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); rule-based critique only"
+   },
+   {
+    "id": "REP-5",
+    "agent": "reporting",
+    "status": "recovered",
+    "round": 0,
+    "note": "template report"
+   }
+  ],
+  "tool_calls": 18,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 2,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.39,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

@@ -1,0 +1,159 @@
+{
+ "incident_id": "INC-011",
+ "system": "multi-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "notification-service",
+  "cause_type": "config_change",
+  "confidence": 0.84
+ },
+ "summary": "Most likely root cause: config change in notification-service (confidence 84%). config change in notification-service: own metrics anomalous: latency_p99_ms x29.71, cpu_pct x0.4; 26 own error logs; deepest implicated node in the dependency chain; config_change C-001 at 2026-03-27T19:35:00Z precedes related anomaly by 5 min",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "config change in notification-service: own metrics anomalous: latency_p99_ms x29.71, cpu_pct x0.4; 26 own error logs; deepest implicated node in the dependency chain; config_change C-001 at 2026-03-27T19:35:00Z precedes related anomaly by 5 min",
+   "suspect_service": "notification-service",
+   "cause_type": "config_change",
+   "confidence": 0.84,
+   "supporting": [
+    {
+     "id": "E06",
+     "kind": "fact",
+     "claim": "notification-service latency_p99_ms moved from baseline 180.2 to 5353.26 (x29.71), first anomalous at 2026-03-27T19:40:00Z",
+     "refs": [
+      "M-notification-service-latency_p99_ms"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E07",
+     "kind": "fact",
+     "claim": "notification-service cpu_pct moved from baseline 34.61 to 13.77 (x0.4), first anomalous at 2026-03-27T19:40:00Z",
+     "refs": [
+      "M-notification-service-cpu_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "notification-service logged 14x ERROR 'batch_send_v2: batch flush stalled, queue depth 48211' between 2026-03-27T19:44:37Z and 2026-03-27T20:50:23Z",
+     "refs": [
+      "L-0235"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E05",
+     "kind": "fact",
+     "claim": "notification-service logged 12x ERROR 'batch_send_v2 worker deadlock detected, restarting worker' between 2026-03-27T19:38:22Z and 2026-03-27T20:55:04Z",
+     "refs": [
+      "L-0233"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "config change C-001: notification-service feature_flags.batch_send_v2 False -> True at 2026-03-27T19:35:00Z by notif-team",
+     "refs": [
+      "C-001"
+     ],
+     "agent": "dependency",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "config change C-001: notification-service feature_flags.batch_send_v2 False -> True at 2026-03-27T19:35:00Z by notif-team",
+  "notification-service logged 14x ERROR 'batch_send_v2: batch flush stalled, queue depth 48211' between 2026-03-27T19:44:37Z and 2026-03-27T20:50:23Z",
+  "notification-service logged 12x ERROR 'batch_send_v2 worker deadlock detected, restarting worker' between 2026-03-27T19:38:22Z and 2026-03-27T20:55:04Z",
+  "notification-service latency_p99_ms moved from baseline 180.2 to 5353.26 (x29.71), first anomalous at 2026-03-27T19:40:00Z",
+  "notification-service cpu_pct moved from baseline 34.61 to 13.77 (x0.4), first anomalous at 2026-03-27T19:40:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Revert the configuration change on notification-service",
+   "rationale": "the change immediately preceded the first anomaly",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Route config/flag changes for notification-service through staged rollout with automatic rollback",
+   "rationale": "config changes need the same safety as code",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "critic accepted in round 0",
+  "critiques": [
+   {
+    "round": 0,
+    "verdict": "accept",
+    "issues": []
+   }
+  ],
+  "tasks": [
+   {
+    "id": "OBS-1",
+    "agent": "observability",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "DEP-2",
+    "agent": "dependency",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "REA-3",
+    "agent": "reasoning",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable)"
+   },
+   {
+    "id": "CRI-4",
+    "agent": "critic",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); rule-based critique only"
+   },
+   {
+    "id": "REP-5",
+    "agent": "reporting",
+    "status": "recovered",
+    "round": 0,
+    "note": "template report"
+   }
+  ],
+  "tool_calls": 14,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 3,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.36,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

@@ -1,0 +1,14 @@
+{
+  "incident_id": "INC-012",
+  "root_cause_service": "orders-db",
+  "cause_type": "resource_exhaustion",
+  "accepted_cause_types": [
+    "resource_exhaustion"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "L-0221",
+    "M-orders-db-disk_used_pct"
+  ],
+  "traps": "frontend is loudest; orders-service deploy 2h earlier is a red herring; log results truncated"
+}

@@ -1,0 +1,15 @@
+{
+  "incident_id": "INC-008",
+  "root_cause_service": "inventory-service",
+  "cause_type": "deployment_bug",
+  "accepted_cause_types": [
+    "deployment_bug"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "D-001",
+    "L-0244",
+    "M-product-db-query_latency_ms"
+  ],
+  "traps": "search-service shows the loudest symptom (CPU) but is a victim; deployments tool fails on first call"
+}

@@ -1,0 +1,175 @@
+{
+ "incident_id": "INC-007",
+ "system": "multi-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "redis-cache",
+  "cause_type": "config_change",
+  "confidence": 0.71
+ },
+ "summary": "Most likely root cause: config change in redis-cache (confidence 71%). config change in redis-cache: own metrics anomalous: hit_rate_pct x0.22; deepest implicated node in the dependency chain; config_change C-001 at 2026-03-17T12:39:00Z precedes related anomaly by 1 min",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "config change in redis-cache: own metrics anomalous: hit_rate_pct x0.22; deepest implicated node in the dependency chain; config_change C-001 at 2026-03-17T12:39:00Z precedes related anomaly by 1 min",
+   "suspect_service": "redis-cache",
+   "cause_type": "config_change",
+   "confidence": 0.71,
+   "supporting": [
+    {
+     "id": "E17",
+     "kind": "fact",
+     "claim": "redis-cache hit_rate_pct moved from baseline 94.92 to 20.93 (x0.22), first anomalous at 2026-03-17T12:40:00Z",
+     "refs": [
+      "M-redis-cache-hit_rate_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "config change C-001: redis-cache default_ttl_seconds 3600 -> 5 at 2026-03-17T12:39:00Z by perf-team",
+     "refs": [
+      "C-001"
+     ],
+     "agent": "dependency",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "query_logs unavailable for redis-cache; conclusion relies on other sources"
+   ]
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "unknown in product-db: own metrics anomalous: query_latency_ms x14.09, cpu_pct x3.21; deepest implicated node in the dependency chain; historical incident(s) ['H-001'] involved product-db (lead only)",
+   "suspect_service": "product-db",
+   "cause_type": "unknown",
+   "confidence": 0.3,
+   "supporting": [
+    {
+     "id": "E13",
+     "kind": "fact",
+     "claim": "product-db query_latency_ms moved from baseline 11.88 to 167.35 (x14.09), first anomalous at 2026-03-17T12:45:00Z",
+     "refs": [
+      "M-product-db-query_latency_ms"
+     ],
+     "agent": "observability",
+     "grounded": true
+    },
+    {
+     "id": "E14",
+     "kind": "fact",
+     "claim": "product-db cpu_pct moved from baseline 29.82 to 95.83 (x3.21), first anomalous at 2026-03-17T12:45:00Z",
+     "refs": [
+      "M-product-db-cpu_pct"
+     ],
+     "agent": "observability",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "no signal pins down the failure mechanism",
+    "query_logs unavailable for product-db; conclusion relies on other sources"
+   ]
+  }
+ ],
+ "facts": [
+  "config change C-001: redis-cache default_ttl_seconds 3600 -> 5 at 2026-03-17T12:39:00Z by perf-team",
+  "product-db query_latency_ms moved from baseline 11.88 to 167.35 (x14.09), first anomalous at 2026-03-17T12:45:00Z",
+  "product-db cpu_pct moved from baseline 29.82 to 95.83 (x3.21), first anomalous at 2026-03-17T12:45:00Z",
+  "redis-cache hit_rate_pct moved from baseline 94.92 to 20.93 (x0.22), first anomalous at 2026-03-17T12:40:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [
+  "query_logs unavailable for redis-cache; conclusion relies on other sources",
+  "no signal pins down the failure mechanism",
+  "query_logs unavailable for product-db; conclusion relies on other sources"
+ ],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Revert the configuration change on redis-cache",
+   "rationale": "the change immediately preceded the first anomaly",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Route config/flag changes for redis-cache through staged rollout with automatic rollback",
+   "rationale": "config changes need the same safety as code",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [
+  "query_logs unavailable for redis-cache; conclusion relies on other sources",
+  "no signal pins down the failure mechanism",
+  "query_logs unavailable for product-db; conclusion relies on other sources"
+ ],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "critic accepted in round 0",
+  "critiques": [
+   {
+    "round": 0,
+    "verdict": "accept",
+    "issues": [
+     "data for redis-cache unavailable from ['query_logs']; rely on alternative sources"
+    ]
+   }
+  ],
+  "tasks": [
+   {
+    "id": "OBS-1",
+    "agent": "observability",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "DEP-2",
+    "agent": "dependency",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); recovered with deterministic analysis"
+   },
+   {
+    "id": "REA-3",
+    "agent": "reasoning",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable)"
+   },
+   {
+    "id": "CRI-4",
+    "agent": "critic",
+    "status": "recovered",
+    "round": 0,
+    "note": "LLM path failed (LLMUnavailable); rule-based critique only"
+   },
+   {
+    "id": "REP-5",
+    "agent": "reporting",
+    "status": "recovered",
+    "round": 0,
+    "note": "template report"
+   }
+  ],
+  "tool_calls": 28,
+  "failed_tool_calls": 6,
+  "retried_tool_calls": 7,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 2.12,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

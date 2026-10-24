@@ -1,0 +1,159 @@
+{
+ "incident_id": "INC-005",
+ "system": "single-agent",
+ "outcome": "conclusive",
+ "root_cause": {
+  "service": "api-gateway",
+  "cause_type": "traffic_spike",
+  "confidence": 0.66
+ },
+ "summary": "Most likely root cause: traffic spike in api-gateway (confidence 66%). traffic_spike in api-gateway: own metrics anomalous: latency_p99_ms x7.97, error_rate_pct x52.92, cpu_pct x2.81, request_rate_rps x4.46; 28 own error logs; deepest implicated node in the dependency chain",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "traffic_spike in api-gateway: own metrics anomalous: latency_p99_ms x7.97, error_rate_pct x52.92, cpu_pct x2.81, request_rate_rps x4.46; 28 own error logs; deepest implicated node in the dependency chain",
+   "suspect_service": "api-gateway",
+   "cause_type": "traffic_spike",
+   "confidence": 0.66,
+   "supporting": [
+    {
+     "id": "E04",
+     "kind": "fact",
+     "claim": "api-gateway latency_p99_ms moved from baseline 181.31 to 1444.78 (x7.97), first anomalous at 2026-03-11T18:00:00Z",
+     "refs": [
+      "M-api-gateway-latency_p99_ms"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E05",
+     "kind": "fact",
+     "claim": "api-gateway error_rate_pct moved from baseline 0.4 to 20.95 (x52.92), first anomalous at 2026-03-11T18:00:00Z",
+     "refs": [
+      "M-api-gateway-error_rate_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E06",
+     "kind": "fact",
+     "claim": "api-gateway cpu_pct moved from baseline 34.44 to 96.85 (x2.81), first anomalous at 2026-03-11T18:00:00Z",
+     "refs": [
+      "M-api-gateway-cpu_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E07",
+     "kind": "fact",
+     "claim": "api-gateway request_rate_rps moved from baseline 221.78 to 989.35 (x4.46), first anomalous at 2026-03-11T18:00:00Z",
+     "refs": [
+      "M-api-gateway-request_rate_rps"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "api-gateway logged 15x ERROR 'rate limiter rejected request: 429 too many requests' between 2026-03-11T18:00:34Z and 2026-03-11T18:54:19Z",
+     "refs": [
+      "L-0230"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "api-gateway logged 13x ERROR 'upstream overloaded: returning 503 (queue depth 4096)' between 2026-03-11T18:07:02Z and 2026-03-11T18:52:59Z",
+     "refs": [
+      "L-0233"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "deployment_bug in auth-service: deployment D-001 at 2026-03-11T17:20:00Z precedes related anomaly by 40 min",
+   "suspect_service": "auth-service",
+   "cause_type": "deployment_bug",
+   "confidence": 0.13,
+   "supporting": [
+    {
+     "id": "E08",
+     "kind": "fact",
+     "claim": "deployment D-001: auth-service v4.0.3 at 2026-03-11T17:20:00Z (Log format tweak)",
+     "refs": [
+      "D-001"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": []
+  }
+ ],
+ "facts": [
+  "api-gateway logged 15x ERROR 'rate limiter rejected request: 429 too many requests' between 2026-03-11T18:00:34Z and 2026-03-11T18:54:19Z",
+  "api-gateway logged 13x ERROR 'upstream overloaded: returning 503 (queue depth 4096)' between 2026-03-11T18:07:02Z and 2026-03-11T18:52:59Z",
+  "api-gateway latency_p99_ms moved from baseline 181.31 to 1444.78 (x7.97), first anomalous at 2026-03-11T18:00:00Z",
+  "api-gateway error_rate_pct moved from baseline 0.4 to 20.95 (x52.92), first anomalous at 2026-03-11T18:00:00Z",
+  "api-gateway cpu_pct moved from baseline 34.44 to 96.85 (x2.81), first anomalous at 2026-03-11T18:00:00Z",
+  "api-gateway request_rate_rps moved from baseline 221.78 to 989.35 (x4.46), first anomalous at 2026-03-11T18:00:00Z",
+  "deployment D-001: auth-service v4.0.3 at 2026-03-11T17:20:00Z (Log format tweak)"
+ ],
+ "inferences": [],
+ "assumptions": [],
+ "actions": [
+  {
+   "priority": "P0",
+   "action": "Raise api-gateway max replicas / shed non-critical load",
+   "rationale": "demand exceeds provisioned capacity",
+   "hypothesis": "H1"
+  },
+  {
+   "priority": "P1",
+   "action": "Pre-scale for campaigns; coordinate marketing pushes with capacity planning",
+   "rationale": "spike was predictable",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 7,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 1,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}

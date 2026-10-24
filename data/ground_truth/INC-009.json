@@ -1,0 +1,11 @@
+{
+  "incident_id": "INC-009",
+  "root_cause_service": null,
+  "cause_type": "unknown",
+  "accepted_cause_types": [
+    "unknown"
+  ],
+  "expected_outcome": "inconclusive",
+  "key_evidence": [],
+  "traps": "no change events, weak signal, incomplete metrics: the honest answer is inconclusive"
+}

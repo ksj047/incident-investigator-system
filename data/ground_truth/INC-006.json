@@ -1,0 +1,14 @@
+{
+  "incident_id": "INC-006",
+  "root_cause_service": "auth-service",
+  "cause_type": "certificate_expiry",
+  "accepted_cause_types": [
+    "certificate_expiry"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "L-0204",
+    "M-auth-service-request_rate_rps"
+  ],
+  "traps": "historical incident H-003 with near-identical symptoms blames redis; redis evictions mildly elevated"
+}

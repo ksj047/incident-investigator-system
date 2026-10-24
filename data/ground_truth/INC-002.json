@@ -1,0 +1,16 @@
+{
+  "incident_id": "INC-002",
+  "root_cause_service": "orders-db",
+  "cause_type": "config_change",
+  "accepted_cause_types": [
+    "config_change"
+  ],
+  "expected_outcome": "conclusive",
+  "key_evidence": [
+    "C-001",
+    "L-0249",
+    "L-0284",
+    "M-orders-db-connections_active"
+  ],
+  "traps": "frontend deploy D-001 right before report is a red herring"
+}

@@ -1,0 +1,114 @@
+{
+ "incident_id": "INC-008",
+ "system": "single-agent",
+ "outcome": "inconclusive",
+ "root_cause": null,
+ "summary": "Investigation inconclusive: the available evidence does not support any root cause with sufficient confidence. Leading lead: unknown in product-db: named in 31 error/warn logs of ['search-service']; deepest implicated node in the dependency chain.",
+ "hypotheses": [
+  {
+   "rank": 1,
+   "id": "H1",
+   "statement": "unknown in product-db: named in 31 error/warn logs of ['search-service']; deepest implicated node in the dependency chain",
+   "suspect_service": "product-db",
+   "cause_type": "unknown",
+   "confidence": 0.37,
+   "supporting": [
+    {
+     "id": "E01",
+     "kind": "fact",
+     "claim": "search-service logged 31x WARN 'product-db query slow, retrying (attempt 3)' between 2026-03-20T08:54:57Z and 2026-03-20T09:54:44Z",
+     "refs": [
+      "L-0307"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "no signal pins down the failure mechanism"
+   ]
+  },
+  {
+   "rank": 2,
+   "id": "H2",
+   "statement": "unknown in search-service: own metrics anomalous: latency_p99_ms x9.04, cpu_pct x2.61; deepest implicated node in the dependency chain",
+   "suspect_service": "search-service",
+   "cause_type": "unknown",
+   "confidence": 0.37,
+   "supporting": [
+    {
+     "id": "E02",
+     "kind": "fact",
+     "claim": "search-service latency_p99_ms moved from baseline 179.57 to 1623.31 (x9.04), first anomalous at 2026-03-20T08:55:00Z",
+     "refs": [
+      "M-search-service-latency_p99_ms"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    },
+    {
+     "id": "E03",
+     "kind": "fact",
+     "claim": "search-service cpu_pct moved from baseline 35.17 to 91.88 (x2.61), first anomalous at 2026-03-20T08:55:00Z",
+     "refs": [
+      "M-search-service-cpu_pct"
+     ],
+     "agent": "single_agent",
+     "grounded": true
+    }
+   ],
+   "contradicting": [],
+   "assumptions": [
+    "no signal pins down the failure mechanism"
+   ]
+  }
+ ],
+ "facts": [
+  "search-service logged 31x WARN 'product-db query slow, retrying (attempt 3)' between 2026-03-20T08:54:57Z and 2026-03-20T09:54:44Z",
+  "search-service latency_p99_ms moved from baseline 179.57 to 1623.31 (x9.04), first anomalous at 2026-03-20T08:55:00Z",
+  "search-service cpu_pct moved from baseline 35.17 to 91.88 (x2.61), first anomalous at 2026-03-20T08:55:00Z"
+ ],
+ "inferences": [],
+ "assumptions": [
+  "no signal pins down the failure mechanism"
+ ],
+ "actions": [
+  {
+   "priority": "P1",
+   "action": "Keep incident open; add tracing/profiling around product-db and collect complete metrics",
+   "rationale": "evidence is insufficient for a root cause",
+   "hypothesis": "H1"
+  }
+ ],
+ "open_questions": [
+  "no signal pins down the failure mechanism",
+  "no signal pins down the failure mechanism"
+ ],
+ "investigation": {
+  "rounds": 1,
+  "termination_reason": "LLM path failed (LLMUnavailable); heuristic single pass",
+  "critiques": [],
+  "tasks": [
+   {
+    "id": "SINGLE-1",
+    "agent": "single_agent",
+    "status": "recovered",
+    "round": 0,
+    "note": ""
+   }
+  ],
+  "tool_calls": 8,
+  "failed_tool_calls": 0,
+  "retried_tool_calls": 2,
+  "llm_calls": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "latency_s": 0.03,
+  "grounding": {
+   "refs_cited": 0,
+   "refs_valid": 0,
+   "facts_downgraded": 0
+  }
+ }
+}
